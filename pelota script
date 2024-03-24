@@ -1,0 +1,83 @@
+# Importar pygame
+import pygame
+
+# Inicializar pygame
+pygame.init()
+
+# Crear la ventana
+screen = pygame.display.set_mode((800, 600))
+
+# Establecer el título y el ícono
+pygame.display.set_caption("Patear una pelota")
+icon = pygame.image.load("icon.png")
+pygame.display.set_icon(icon)
+
+# Cargar la imagen del personaje
+character = pygame.image.load("character.png")
+character_x = 100
+character_y = 450
+
+# Cargar la imagen de la pelota
+ball = pygame.image.load("ball.png")
+ball_x = 200
+ball_y = 500
+ball_dx = 0.5 # Velocidad horizontal de la pelota
+ball_dy = -0.5 # Velocidad vertical de la pelota
+
+# Función para dibujar el personaje
+def draw_character(x, y):
+    screen.blit(character, (x, y))
+
+# Función para dibujar la pelota
+def draw_ball(x, y):
+    screen.blit(ball, (x, y))
+
+# Función para detectar la colisión entre el personaje y la pelota
+def is_collision(x1, y1, x2, y2):
+    distance = ((x1 - x2) ** 2 + (y1 - y2) ** 2) ** 0.5
+    if distance < 50:
+        return True
+    else:
+        return False
+
+# Bucle principal del juego
+running = True
+while running:
+
+    # Rellenar el fondo con color
+    screen.fill((135, 206, 235))
+
+    # Manejar los eventos de entrada
+    for event in pygame.event.get():
+        # Si se cierra la ventana, salir del juego
+        if event.type == pygame.QUIT:
+            running = False
+        # Si se presiona una tecla, mover el personaje
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                character_x -= 10
+            if event.key == pygame.K_RIGHT:
+                character_x += 10
+
+    # Actualizar la posición de la pelota
+    ball_x += ball_dx
+    ball_y += ball_dy
+
+    # Rebotar la pelota si toca los bordes de la ventana
+    if ball_x <= 0 or ball_x >= 760:
+        ball_dx = -ball_dx
+    if ball_y <= 0 or ball_y >= 560:
+        ball_dy = -ball_dy
+
+    # Patear la pelota si hay colisión con el personaje
+    if is_collision(character_x, character_y, ball_x, ball_y):
+        ball_dx = -ball_dx
+        ball_dy = -ball_dy
+
+    # Dibujar el personaje y la pelota
+    draw_character(character_x, character_y)
+    draw_ball(ball_x, ball_y)
+
+    # Actualizar la pantalla
+    pygame.display.update()
+
